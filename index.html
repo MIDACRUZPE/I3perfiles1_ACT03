@@ -1,0 +1,1329 @@
+<!DOCTYPE html>
+<html lang="es" class="h-full bg-slate-100">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Perfiles1_ACT03 - Simulador HR: Misión Diagnóstico y Rediseño Ocupacional</title>
+  
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+  <!-- FontAwesome CDN -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  
+  <style>
+    /* Custom Scrollbar */
+    ::-webkit-scrollbar { width: 8px; height: 8px; }
+    ::-webkit-scrollbar-track { background: #f1f5f9; }
+    ::-webkit-scrollbar-thumb { background: #5b21b6; border-radius: 4px; }
+    ::-webkit-scrollbar-thumb:hover { background: #4c1d95; }
+    
+    /* Sticker 3D Styles & Responsiveness Fixes */
+    .sticker-card {
+      background-color: #ffffff;
+      border: 4px solid #1e293b;
+      box-shadow: 6px 6px 0px #1e293b;
+      border-radius: 1rem;
+      transition: all 0.2s ease;
+      overflow-wrap: break-word;
+      word-break: break-word;
+    }
+    .sticker-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 8px 8px 0px #1e293b;
+    }
+    
+    .sticker-button {
+      border: 3px solid #1e293b;
+      box-shadow: 4px 4px 0px #1e293b;
+      transition: all 0.15s ease;
+      touch-action: manipulation;
+    }
+    .sticker-button:hover {
+      transform: translate(-2px, -2px);
+      box-shadow: 6px 6px 0px #1e293b;
+    }
+    .sticker-button:active {
+      transform: translate(2px, 2px);
+      box-shadow: 2px 2px 0px #1e293b;
+    }
+
+    /* Instruction & Pedagogical Banners */
+    .instruction-banner {
+      background-color: #fef08a;
+      border: 3px solid #1e293b;
+      box-shadow: 4px 4px 0px #1e293b;
+      border-radius: 0.75rem;
+    }
+
+    .concept-box {
+      background-color: #f0fdf4;
+      border: 3px solid #166534;
+      box-shadow: 4px 4px 0px #166534;
+      border-radius: 0.75rem;
+    }
+
+    /* Range slider custom styling for touch targets */
+    input[type=range]::-webkit-slider-thumb {
+      height: 28px;
+      width: 28px;
+      border-radius: 50%;
+      background: #5b21b6;
+      border: 3px solid #1e293b;
+      cursor: pointer;
+      -webkit-appearance: none;
+      margin-top: -10px;
+    }
+    input[type=range]::-moz-range-thumb {
+      height: 28px;
+      width: 28px;
+      border-radius: 50%;
+      background: #5b21b6;
+      border: 3px solid #1e293b;
+      cursor: pointer;
+    }
+
+    /* FIX 5: solo en móvil se fuerza 16px para evitar el zoom de iOS al enfocar */
+    @media screen and (max-width: 600px) {
+      select, textarea, input {
+        font-size: 16px !important;
+      }
+    }
+
+    /* FIX 4: impresión limpia de la página principal (Ctrl+P directo) */
+    @media print {
+      .no-print { display: none !important; }
+      body { background: white !important; }
+      .sticker-card, .instruction-banner, .concept-box { box-shadow: none !important; }
+    }
+  </style>
+</head>
+<body class="h-full font-sans antialiased text-slate-800 flex flex-col min-h-screen">
+
+  <!-- NAVBAR SUPERIOR INSTITUCIONAL -->
+  <header class="no-print bg-purple-900 text-white border-b-4 border-slate-900 sm:sticky sm:top-0 z-50 shadow-xl">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 flex flex-wrap justify-between items-center gap-3">
+      <div class="flex items-center space-x-3">
+        <span class="bg-yellow-400 text-purple-950 font-black px-3 py-1 rounded-xl border-2 border-slate-900 text-xs sm:text-sm tracking-wider uppercase shadow-sm">
+          Instituto i3
+        </span>
+        <h1 class="text-lg sm:text-2xl font-black tracking-tight text-yellow-300 leading-tight">
+          Simulador HR: Misión Diagnóstico y Rediseño Ocupacional
+        </h1>
+      </div>
+      <div class="flex items-center gap-2">
+        <span class="bg-cyan-500 text-slate-950 px-3 py-1.5 rounded-xl font-black text-xs sm:text-sm border-2 border-slate-900 flex items-center gap-2 shadow">
+          <i class="fa-solid fa-clock"></i>
+          <span id="timer-label" class="hidden sm:inline">TIEMPO RESTANTE:</span>
+          <span id="timer-display" class="font-mono text-sm sm:text-base text-slate-950">65:00</span>
+        </span>
+      </div>
+    </div>
+  </header>
+
+  <!-- BARRA DE RUTA AUTÓNOMA -->
+  <section class="no-print bg-yellow-400 border-b-4 border-slate-900 px-4 py-3">
+    <div class="max-w-7xl mx-auto">
+      <div class="bg-white border-4 border-slate-900 rounded-xl p-3 shadow-md flex flex-col md:flex-row items-center justify-between gap-4">
+        <div class="flex items-center gap-2 text-slate-900 font-extrabold text-xs sm:text-base">
+          <i class="fa-solid fa-map-signs text-purple-700 text-xl"></i>
+          <span>RUTA DE TRABAJO AUTÓNOMO EN 4 PASOS:</span>
+        </div>
+        <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 w-full md:w-auto text-[11px] sm:text-xs font-bold">
+          <div class="bg-purple-100 border-2 border-purple-800 text-purple-900 p-2 rounded-lg text-center">
+            <span class="block text-purple-700 font-black">PASO 1</span> Caso y Registro
+          </div>
+          <div class="bg-cyan-100 border-2 border-cyan-800 text-cyan-900 p-2 rounded-lg text-center">
+            <span class="block text-cyan-700 font-black">PASO 2</span> 3 Estaciones
+          </div>
+          <div class="bg-orange-100 border-2 border-orange-800 text-orange-900 p-2 rounded-lg text-center">
+            <span class="block text-orange-700 font-black">PASO 3</span> Enviar Trabajo
+          </div>
+          <div class="bg-lime-100 border-2 border-lime-800 text-lime-900 p-2 rounded-lg text-center">
+            <span class="block text-lime-700 font-black">PASO 4</span> PDF / Evidencia
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- NAVEGACIÓN ENTRE ESTACIONES Y SECCIONES -->
+  <nav class="no-print bg-purple-800 border-b-4 border-slate-900 px-2 sm:px-4 py-2 text-white">
+    <div class="max-w-7xl mx-auto flex flex-wrap justify-center sm:justify-start gap-1.5 sm:gap-2">
+      <button type="button" onclick="showScreen('pantalla-0')" id="nav-btn-pantalla-0" class="nav-tab sticker-button bg-yellow-400 text-purple-950 font-black px-3 sm:px-4 py-2 rounded-xl text-xs flex items-center gap-1.5">
+        <i class="fa-solid fa-briefcase"></i> <span>0. Caso &amp; Registro</span>
+      </button>
+      <button type="button" onclick="showScreen('pantalla-1')" id="nav-btn-pantalla-1" class="nav-tab sticker-button bg-purple-700 hover:bg-purple-600 text-white font-bold px-3 sm:px-4 py-2 rounded-xl text-xs flex items-center gap-1.5">
+        <i class="fa-solid fa-magnifying-glass"></i> <span>Estación 1: Lupa Ocupacional</span>
+      </button>
+      <button type="button" onclick="showScreen('pantalla-2')" id="nav-btn-pantalla-2" class="nav-tab sticker-button bg-purple-700 hover:bg-purple-600 text-white font-bold px-3 sm:px-4 py-2 rounded-xl text-xs flex items-center gap-1.5">
+        <i class="fa-solid fa-sliders"></i> <span>Estación 2: Tablero Autonomía</span>
+      </button>
+      <button type="button" onclick="showScreen('pantalla-3')" id="nav-btn-pantalla-3" class="nav-tab sticker-button bg-purple-700 hover:bg-purple-600 text-white font-bold px-3 sm:px-4 py-2 rounded-xl text-xs flex items-center gap-1.5">
+        <i class="fa-solid fa-cubes"></i> <span>Estación 3: Constructor KSAO</span>
+      </button>
+      <button type="button" onclick="showScreen('pantalla-4')" id="nav-btn-pantalla-4" class="nav-tab sticker-button bg-purple-700 hover:bg-purple-600 text-white font-bold px-3 sm:px-4 py-2 rounded-xl text-xs flex items-center gap-1.5">
+        <i class="fa-solid fa-file-contract"></i> <span>Informe &amp; Exit Ticket</span>
+      </button>
+    </div>
+  </nav>
+
+  <!-- CONTENIDO PRINCIPAL -->
+  <main class="flex-grow max-w-7xl w-full mx-auto px-3 sm:px-6 lg:px-8 py-4 sm:py-6">
+
+    <!-- PANTALLA 0: LANDING & CASO DE NEGOCIO -->
+    <div id="pantalla-0" class="screen-content space-y-6">
+      
+      <!-- INSTRUCCIÓN GENERAL PARA EL ESTUDIANTE -->
+      <div class="instruction-banner no-print p-4 text-slate-900 space-y-2">
+        <div class="flex items-center gap-2 font-black text-sm sm:text-base text-purple-950 uppercase border-b-2 border-slate-900 pb-1">
+          <i class="fa-solid fa-circle-info text-purple-800 text-lg"></i>
+          <span>Guía Paso a Paso: ¿Qué debes hacer en esta pantalla?</span>
+        </div>
+        <ol class="list-decimal list-inside text-xs sm:text-sm font-semibold space-y-1 text-slate-800">
+          <li>Lee detenidamente el <strong>Marco de Referencia General</strong> y el <strong>Caso de Negocio Express-Logistics S.A.S.</strong> para comprender la problemática de la empresa.</li>
+          <li>Completa los datos formales de tu equipo en el formulario <strong>"Registro de la Firma Consultora"</strong>.</li>
+          <li>Al finalizar, haz clic en el botón violeta <strong>"Iniciar Estación 1: La Lupa Ocupacional"</strong> para comenzar los retos prácticos.</li>
+        </ol>
+      </div>
+
+      <!-- MARCO DE REFERENCIA TEÓRICO COMPLETO -->
+      <div class="sticker-card bg-purple-900 text-white p-4 sm:p-6 border-4 border-slate-900 rounded-2xl space-y-4">
+        <div class="flex items-start gap-4">
+          <div class="p-3 bg-yellow-400 text-purple-950 rounded-2xl text-3xl hidden sm:block border-2 border-slate-900 shrink-0">
+            <i class="fa-solid fa-map"></i>
+          </div>
+          <div class="space-y-3">
+            <span class="bg-yellow-400 text-purple-950 text-[10px] sm:text-xs font-black px-3 py-1 rounded-full uppercase tracking-wider inline-block border border-slate-900">
+              Marco Teórico General - Fundamentos Ocupacionales
+            </span>
+            <h2 class="text-xl sm:text-2xl font-black text-yellow-300">
+              El Mapa de Navegación del Talento Humano
+            </h2>
+            <p class="text-xs sm:text-sm font-medium leading-relaxed text-slate-100">
+              Imagina que una empresa es como una gran ciudad en constante crecimiento. Para que el tráfico fluya sin atascos, los servicios públicos funcionen y los edificios se construyan de manera segura, los urbanistas necesitan planos detallados, rutas claras y normas de construcción. En la gestión del talento humano ocurre exactamente lo mismo: sin un método riguroso para estudiar y estructurar el trabajo, se generan problemas organizacionales graves, como empleados que no entienden lo que se espera de ellos, funciones duplicadas, accidentes laborales y salarios fijados de forma injusta.
+            </p>
+            
+            <div class="bg-purple-950/80 p-4 rounded-xl border-2 border-purple-600 space-y-2 text-xs sm:text-sm">
+              <h4 class="font-black text-yellow-300 uppercase tracking-wide">¿Qué son los Estudios Ocupacionales?</h4>
+              <p class="text-slate-200 leading-relaxed">
+                Son el conjunto de métodos, enfoques y modelos científicos que nos permiten analizar, entender, clasificar y organizar el trabajo humano de manera objetiva. Su objetivo es garantizar tres elementos fundamentales en toda empresa: <strong>eficiencia operativa</strong> (procesos ágiles), <strong>equidad laboral</strong> (salarios y cargas justificadas) y <strong>protección de la salud del trabajador</strong> (prevención de enfermedades y riesgos).
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- CASO DE NEGOCIO - PUESTO OBJETIVO RELEVANTE -->
+      <div class="sticker-card bg-orange-500 text-white p-4 sm:p-6 border-4 border-slate-900 rounded-2xl">
+        <div class="flex items-start gap-4">
+          <div class="p-3 bg-slate-900 text-yellow-400 rounded-2xl text-3xl hidden sm:block border-2 border-white shrink-0">
+            <i class="fa-solid fa-triangle-exclamation"></i>
+          </div>
+          <div class="space-y-2">
+            <span class="bg-black/30 text-white text-[10px] sm:text-xs font-black px-3 py-1 rounded-full uppercase tracking-wider inline-block">
+              Caso de Negocio en Crisis de Operaciones
+            </span>
+            <h2 class="text-xl sm:text-3xl font-black text-yellow-300">
+              Cliente: Express-Logistics S.A.S.
+            </h2>
+            <p class="font-medium leading-relaxed text-xs sm:text-base">
+              La compañía de entregas de última milla enfrenta una tasa de rotación anual del <strong>42%</strong> en su personal operativo y un preocupante aumento del <strong>35%</strong> en incapacidades por lesiones osteomusculares.
+            </p>
+            <div class="bg-black/20 p-3 rounded-xl border border-orange-300 text-xs sm:text-sm space-y-1">
+              <p class="font-bold text-yellow-200">El Puesto Crítico a Rediseñar: "Coordinador de Operaciones Urbanas"</p>
+              <p class="text-slate-100">
+                Los directivos señalan que existe una superposición constante de funciones y roces diarios entre la bodega y los despachadores motorizados. El puesto de <strong>Coordinador de Operaciones Urbanas</strong> fue creado recientemente pero nadie tiene claro hasta dónde llegan sus decisiones ni qué competencias técnicas requiere para solucionar imprevistos de ruteo sin causar pérdidas de paquetes. Tu firma consultora ha sido contratada para diagnosticar y rediseñar este perfil.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- REGISTRO DE LA FIRMA -->
+      <div class="sticker-card bg-white p-4 sm:p-6 border-4 border-slate-900 rounded-2xl">
+        <h3 class="text-lg sm:text-xl font-black text-purple-900 mb-4 flex items-center gap-2 border-b-4 border-purple-900 pb-2">
+          <i class="fa-solid fa-id-card text-yellow-500"></i> REGISTRO DE LA FIRMA CONSULTORA
+        </h3>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div>
+            <label for="input-actividad-id" class="block text-xs font-black text-slate-700 uppercase mb-1">
+              Identificador Único de Actividad (ID):
+            </label>
+            <input type="text" id="input-actividad-id" name="actividad_id" value="Perfiles1_ACT03" readonly class="w-full bg-slate-200 text-slate-800 font-extrabold px-3 py-2 sm:px-4 sm:py-2.5 rounded-xl border-2 border-slate-900 opacity-90 cursor-not-allowed text-sm" />
+            <p class="text-[10px] text-slate-500 font-bold mt-1">Sello congelado. Coincide con la estructura institucional.</p>
+          </div>
+
+          <div>
+            <label for="input-materia" class="block text-xs font-black text-slate-700 uppercase mb-1">
+              Nombre de la Materia / Asignatura:
+            </label>
+            <input type="text" id="input-materia" value="Estructurar Perfiles de Cargo" class="w-full bg-slate-50 text-slate-900 font-bold px-3 py-2 sm:px-4 sm:py-2.5 rounded-xl border-2 border-slate-900 focus:bg-yellow-100 focus:outline-none text-sm" />
+          </div>
+
+          <div>
+            <label for="input-grupo" class="block text-xs font-black text-slate-700 uppercase mb-1">
+              Nombre de la Firma Consultora / Grupo (*):
+            </label>
+            <input type="text" id="input-grupo" placeholder="Ej: Consultores Alfa - Equipo 4" class="w-full bg-slate-50 text-slate-900 font-bold px-3 py-2 sm:px-4 sm:py-2.5 rounded-xl border-2 border-slate-900 focus:bg-yellow-100 focus:outline-none text-sm" />
+          </div>
+
+          <div>
+            <label for="input-participantes" class="block text-xs font-black text-slate-700 uppercase mb-1">
+              Integrantes de la Firma Consultora (*):
+            </label>
+            <textarea id="input-participantes" rows="2" placeholder="Nombres completos de los consultores del equipo..." class="w-full bg-slate-50 text-slate-900 font-bold px-3 py-2 rounded-xl border-2 border-slate-900 focus:bg-yellow-100 focus:outline-none text-sm"></textarea>
+          </div>
+        </div>
+
+        <div class="mt-6 flex justify-end">
+          <button type="button" onclick="showScreen('pantalla-1')" class="sticker-button w-full sm:w-auto bg-purple-700 hover:bg-purple-800 text-white font-black py-3 px-6 rounded-xl flex items-center justify-center gap-2 text-sm">
+            Iniciar Estación 1: La Lupa Ocupacional <i class="fa-solid fa-arrow-right"></i>
+          </button>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- PANTALLA 1: ESTACIÓN 1 (LA LUPA OCUPACIONAL) -->
+    <div id="pantalla-1" class="screen-content space-y-6 hidden">
+      
+      <!-- INSTRUCCIÓN DE LA ESTACIÓN 1 -->
+      <div class="instruction-banner no-print p-4 text-slate-900 space-y-2">
+        <div class="flex items-center gap-2 font-black text-sm sm:text-base text-purple-950 uppercase border-b-2 border-slate-900 pb-1">
+          <i class="fa-solid fa-circle-info text-purple-800 text-lg"></i>
+          <span>Instrucciones Estación 1: Selección de Técnicas y Justificación</span>
+        </div>
+        <ol class="list-decimal list-inside text-xs sm:text-sm font-semibold space-y-1 text-slate-800">
+          <li>Lee detenidamente el <strong>Bloque Teórico Extenso</strong> para repasar la diferencia entre el Análisis Clásico, Funcional, Participativo (DACUM) y la distinción crítica entre <strong>RRHH</strong> y <strong>SST</strong>.</li>
+          <li>Analiza los 3 escenarios problemáticos de la empresa (Caso A, Caso B y Caso C) y selecciona en cada menú desplegable la técnica de levantamiento ocupacional más adecuada.</li>
+          <li>Redacta en la casilla del <strong>Ítem 1</strong> la fundamentación técnica de tus elecciones, explicando claramente por qué elegiste esa combinación y cómo se diferencian los objetivos de productividad (RRHH) frente a los ergonómicos/preventivos (SST).</li>
+        </ol>
+      </div>
+
+      <!-- MARCO TEÓRICO EXTENSO - SECCIONES 1 Y 2 EXPLICADAS EN DETALLE -->
+      <div class="sticker-card bg-cyan-50 border-4 border-slate-900 p-4 sm:p-6 rounded-2xl space-y-4">
+        <h3 class="text-lg sm:text-xl font-black text-purple-900 flex items-center gap-2 border-b-4 border-purple-900 pb-2">
+          <i class="fa-solid fa-book-open text-cyan-600"></i> BLOQUE TEÓRICO DETALLADO: METODOLOGÍAS Y TÉCNICAS DE ANÁLISIS
+        </h3>
+
+        <!-- SUB-BLOQUE 1: MODELOS HISTÓRICOS -->
+        <div class="bg-white p-4 rounded-xl border-2 border-slate-900 shadow-sm space-y-3 text-xs sm:text-sm">
+          <h4 class="font-black text-purple-900 text-base border-b-2 border-purple-200 pb-1 flex items-center gap-2">
+            <i class="fa-solid fa-layer-group text-cyan-600"></i> 1. Tres Formas de Estudiar el Trabajo en las Empresas
+          </h4>
+          <p class="text-slate-700 leading-relaxed">
+            Un <strong>estudio ocupacional</strong> es la investigación metódica que recopila datos técnicos sobre qué se hace en un puesto de trabajo. A lo largo del tiempo, la gestión del talento ha evolucionado a través de 3 enfoques principales:
+          </p>
+          
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+            <div class="bg-slate-50 p-3 rounded-lg border-2 border-slate-900 space-y-2">
+              <span class="bg-purple-900 text-white text-[10px] font-black px-2 py-0.5 rounded uppercase">1.1 Análisis Clásico</span>
+              <h5 class="font-bold text-slate-900 text-xs">Centrado en Tareas Paso a Paso (STPS México)</h5>
+              <p class="text-[11px] text-slate-600 leading-normal">
+                Surgió a inicios del siglo XX. Responde a 3 preguntas rígidas: <em>¿Qué hace, cómo lo hace y para qué lo hace?</em> Enumera minuciosamente movimientos físicos, herramientas y tiempos.
+              </p>
+              <div class="concept-box p-2 text-[10px] text-green-900 font-medium">
+                <strong>💡 Ejemplo cotidiano:</strong> Es como una receta paso a paso para hacer galletas. Si cambias el tipo de horno, la receta rígida ya no sirve porque se enfoca en el paso exacto y no en adaptar la técnica.
+              </div>
+            </div>
+
+            <div class="bg-slate-50 p-3 rounded-lg border-2 border-slate-900 space-y-2">
+              <span class="bg-purple-900 text-white text-[10px] font-black px-2 py-0.5 rounded uppercase">1.2 Análisis Funcional</span>
+              <h5 class="font-bold text-slate-900 text-xs">Centrado en Propósito y Competencias (OIT / SENA)</h5>
+              <p class="text-[11px] text-slate-600 leading-normal">
+                Nació para superar la rigidez del modelo clásico. Pregunta primero: <em>¿Para qué existe este puesto en la empresa?</em> Y luego descompone esa meta mayor en unidades de competencia y resultados esperados.
+              </p>
+              <div class="concept-box p-2 text-[10px] text-green-900 font-medium">
+                <strong>💡 Ejemplo cotidiano:</strong> Es como la labor de los bomberos: no importa si llegan en camión o helicóptero (la tarea cambia); lo crucial es salvar vidas y controlar el peligro (el resultado de calidad).
+              </div>
+            </div>
+
+            <div class="bg-slate-50 p-3 rounded-lg border-2 border-slate-900 space-y-2">
+              <span class="bg-purple-900 text-white text-[10px] font-black px-2 py-0.5 rounded uppercase">1.3 Métodos Participativos</span>
+              <h5 class="font-bold text-slate-900 text-xs">Mapeo Rápido con Expertos (DACUM / SCID)</h5>
+              <p class="text-[11px] text-slate-600 leading-normal">
+                Técnicas aceleradas para puestos de ritmo cambiante donde se reúne a un grupo de 8 a 12 empleados expertos (SME) en un taller de 2 días para construir el mapa funcional por consenso.
+              </p>
+              <div class="concept-box p-2 text-[10px] text-green-900 font-medium">
+                <strong>💡 Herramientas:</strong> <strong>DACUM</strong> (mapa rápido), <strong>AMOD</strong> (ordenar por dificultad) y <strong>SCID</strong> (análisis profundo de seguridad).
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- SUB-BLOQUE 2: TÉCNICAS CUALITATIVAS, CUANTITATIVAS Y DIFERENCIA CRÍTICA RRHH VS SST -->
+        <div class="bg-white p-4 rounded-xl border-2 border-slate-900 shadow-sm space-y-3 text-xs sm:text-sm">
+          <h4 class="font-black text-purple-900 text-base border-b-2 border-purple-200 pb-1 flex items-center gap-2">
+            <i class="fa-solid fa-microscope text-cyan-600"></i> 2. Técnicas Prácticas y la Diferencia entre RRHH y SST
+          </h4>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <!-- DIFERENCIA CRÍTICA RRHH VS SST -->
+            <div class="bg-yellow-100/80 p-3 sm:p-4 rounded-xl border-2 border-yellow-800 space-y-2">
+              <h5 class="font-black text-purple-950 border-b border-yellow-400 pb-1 text-xs sm:text-sm uppercase flex items-center gap-1.5">
+                <i class="fa-solid fa-triangle-exclamation text-orange-600"></i> Diferencia Fundamental: Análisis para RRHH vs. SST
+              </h5>
+              <p class="text-[11px] sm:text-xs text-slate-800 leading-relaxed">
+                <strong>Recursos Humanos (RRHH):</strong> Se enfoca en la <strong>productividad y estructura</strong>. Observa la secuencia lógica de tareas, los tiempos de ejecución, la cadena de supervisión, las competencias requeridas y el valor salarial del puesto.
+              </p>
+              <p class="text-[11px] sm:text-xs text-slate-800 leading-relaxed">
+                <strong>Seguridad y Salud en el Trabajo (SST):</strong> Regido por la normativa legal (Decreto 1072/2015, Res. 0312/2019). Se enfoca en la <strong>prevención y salud del trabajador</strong>. Exige observar presencialmente en campo las cargas físicas, movimientos repetitivos, posturas forzadas y peligros ambientales para evitar accidentes o enfermedades laborales.
+              </p>
+            </div>
+
+            <!-- TÉCNICAS CUALITATIVAS Y CUANTITATIVAS -->
+            <div class="bg-cyan-50/80 p-3 sm:p-4 rounded-xl border-2 border-cyan-800 space-y-2">
+              <h5 class="font-black text-purple-950 border-b border-cyan-300 pb-1 text-xs sm:text-sm uppercase">Técnicas de Recolección en Campo</h5>
+              <ul class="text-[11px] text-slate-700 space-y-1.5 leading-snug">
+                <li><strong>• Observación Directa en Campo:</strong> El analista acompaña presencialmente la labor. Es indispensable en SST para medir esfuerzo físico real.</li>
+                <li><strong>• Entrevista Estructurada de 3 Pasos:</strong> Exploración (con el empleado), Verificación (de la operación) y Confirmación (con el jefe directo para evitar exageraciones).</li>
+                <li><strong>• Cuestionario PAQ (McCormick):</strong> Medición cuantitativa con 194 preguntas sobre conducta humana en el trabajo.</li>
+                <li><strong>• Métodos Ergonómicos AET (REBA / RULA):</strong> Evaluaciones biomecánicas para determinar el impacto del levantamiento de cargas sobre la columna y extremidades.</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- RETO 1 -->
+      <div class="sticker-card bg-white p-4 sm:p-6 border-4 border-slate-900 rounded-2xl">
+        <h3 class="text-lg sm:text-xl font-black text-purple-900 mb-4 flex items-center gap-2 border-b-2 border-purple-900 pb-2">
+          <i class="fa-solid fa-list-check text-yellow-500"></i> RETO 1: DIAGNÓSTICO DE TÉCNICAS DE LEVANTAMIENTO DE INFORMACIÓN
+        </h3>
+        <p class="text-xs sm:text-sm font-bold text-slate-600 mb-4">
+          Analiza los 3 problemas operativos planteados por el cliente Express-Logistics S.A.S. y selecciona en cada menú desplegable la técnica más adecuada (*):
+        </p>
+
+        <div class="space-y-6">
+          <div class="p-3 sm:p-4 bg-slate-50 rounded-xl border-2 border-slate-900">
+            <label for="select-caso-a" class="font-black text-purple-900 mb-1 block text-sm">Caso A: Operadores de Selección en Bodega (*)</label>
+            <p class="text-xs font-semibold text-slate-600 mb-2">Sufren altas incapacidades por dolores de espalda y movimientos repetitivos al mover cajas pesadas durante la clasificación.</p>
+            <select id="select-caso-a" class="w-full bg-white font-bold p-2.5 rounded-xl border-2 border-slate-900 focus:bg-yellow-100 text-sm">
+              <option value="">-- Selecciona la técnica adecuada --</option>
+              <option value="AET">Evaluación Ergonómica en Campo (AET / Análisis SST - REBA/RULA)</option>
+              <option value="DACUM">Panel de Expertos DACUM</option>
+              <option value="MPDQ">Cuestionario Management Position Description Questionnaire (MPDQ)</option>
+            </select>
+          </div>
+
+          <div class="p-3 sm:p-4 bg-slate-50 rounded-xl border-2 border-slate-900">
+            <label for="select-caso-b" class="font-black text-purple-900 mb-1 block text-sm">Caso B: Coordinador de Operaciones Urbanas (*)</label>
+            <p class="text-xs font-semibold text-slate-600 mb-2">Es un puesto nuevo donde hay fuertes roces sobre quién aprueba cambios de ruta y resuelve imprevistos de entregas.</p>
+            <select id="select-caso-b" class="w-full bg-white font-bold p-2.5 rounded-xl border-2 border-slate-900 focus:bg-yellow-100 text-sm">
+              <option value="">-- Selecciona la técnica adecuada --</option>
+              <option value="AET">Evaluación Ergonómica en Campo (AET)</option>
+              <option value="DACUM">Metodología Participativa / Panel DACUM con Expertos (SME)</option>
+              <option value="Observacion">Observación Directa en Campo</option>
+            </select>
+          </div>
+
+          <div class="p-3 sm:p-4 bg-slate-50 rounded-xl border-2 border-slate-900">
+            <label for="select-caso-c" class="font-black text-purple-900 mb-1 block text-sm">Caso C: Despachadores de Motorizados (*)</label>
+            <p class="text-xs font-semibold text-slate-600 mb-2">Requieren estandarizar paso a paso la secuencia estricta para recibir guías y entregar paquetes a los repartidores.</p>
+            <select id="select-caso-c" class="w-full bg-white font-bold p-2.5 rounded-xl border-2 border-slate-900 focus:bg-yellow-100 text-sm">
+              <option value="">-- Selecciona la técnica adecuada --</option>
+              <option value="Clasico">Análisis Ocupacional Clásico / Observación Directa e Historial de Pasos</option>
+              <option value="MPDQ">Cuestionario MPDQ</option>
+              <option value="AET">Evaluación Ergonómica AET</option>
+            </select>
+          </div>
+
+          <!-- GUÍA EXPLICATIVA PARA REDACTAR EL ÍTEM 1 -->
+          <div class="concept-box p-3 sm:p-4 text-xs text-slate-800 space-y-1">
+            <strong class="block font-black text-green-950 text-sm">💡 Orientación para redactar tu respuesta (Ítem 1):</strong>
+            <p>
+              Explica en 2 o 3 párrafos por qué tu combinación de técnicas resuelve la crisis. Asegúrate de resaltar por qué en el <strong>Caso A</strong> se usó un enfoque ergonómico de <strong>SST</strong> (salud física) mientras que en el <strong>Caso B y C</strong> se usaron enfoques de <strong>RRHH</strong> (definición de competencias y procesos organizacionales).
+            </p>
+          </div>
+
+          <div>
+            <label for="item-1" class="block text-xs font-black text-slate-700 uppercase mb-1">
+              Justificación Técnica del Grupo (Sustento del Diagnóstico - Ítem 1) (*):
+            </label>
+            <textarea id="item-1" rows="4" placeholder="Escribe aquí tu sustentación detallada relacionando los casos con las metodologías explicadas..." class="w-full bg-slate-50 font-bold p-3 rounded-xl border-2 border-slate-900 focus:bg-yellow-100 text-sm"></textarea>
+          </div>
+        </div>
+
+        <div class="mt-6 flex flex-col sm:flex-row justify-between gap-3">
+          <button type="button" onclick="showScreen('pantalla-0')" class="sticker-button w-full sm:w-auto bg-slate-200 hover:bg-slate-300 text-slate-800 font-black py-2.5 px-5 rounded-xl text-sm text-center">
+            <i class="fa-solid fa-arrow-left"></i> Anterior
+          </button>
+          <button type="button" onclick="showScreen('pantalla-2')" class="sticker-button w-full sm:w-auto bg-purple-700 hover:bg-purple-800 text-white font-black py-2.5 px-5 rounded-xl text-sm text-center">
+            Siguiente: Tablero de Autonomía <i class="fa-solid fa-arrow-right"></i>
+          </button>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- PANTALLA 2: ESTACIÓN 2 (TABLERO DE AUTONOMÍA Y RESPONSABILIDAD) -->
+    <div id="pantalla-2" class="screen-content space-y-6 hidden">
+      
+      <!-- INSTRUCCIÓN DE LA ESTACIÓN 2 -->
+      <div class="instruction-banner no-print p-4 text-slate-900 space-y-2">
+        <div class="flex items-center gap-2 font-black text-sm sm:text-base text-purple-950 uppercase border-b-2 border-slate-900 pb-1">
+          <i class="fa-solid fa-circle-info text-purple-800 text-lg"></i>
+          <span>Instrucciones Estación 2: Calibración con Sliders y Matriz de Control</span>
+        </div>
+        <ol class="list-decimal list-inside text-xs sm:text-sm font-semibold space-y-1 text-slate-800">
+          <li>Estudia el marco conceptual sobre el <strong>Grado de Autonomía</strong> y las <strong>5 Áreas de Responsabilidad</strong>.</li>
+          <li>Ajusta los 3 controles deslizantes (sliders) para definir el porcentaje exacto de independencia que debe tener el <strong>Coordinador de Operaciones Urbanas</strong>.</li>
+          <li>Redacta en la casilla del <strong>Ítem 2</strong> la explicación de tu matriz, aclarando qué decisiones puede tomar de forma independiente y cuáles requieren consultar a la gerencia.</li>
+        </ol>
+      </div>
+
+      <!-- MARCO TEÓRICO COMPLETO EXPLICADO EN DETALLE - SECCIÓN 3 -->
+      <div class="sticker-card bg-yellow-50 border-4 border-slate-900 p-4 sm:p-6 rounded-2xl space-y-4">
+        <h3 class="text-lg sm:text-xl font-black text-purple-900 flex items-center gap-2 border-b-4 border-purple-900 pb-2">
+          <i class="fa-solid fa-book-open text-yellow-600"></i> BLOQUE TEÓRICO COMPLETO: INDICADORES DE AUTONOMÍA Y RESPONSABILIDAD
+        </h3>
+        
+        <p class="text-xs sm:text-sm font-medium text-slate-700 leading-relaxed">
+          En Recursos Humanos, <strong>medir la autonomía</strong> significa definir cuánta libertad tiene un trabajador para decidir por sí mismo sin pedir permiso previo. Por otro lado, <strong>medir la responsabilidad</strong> implica delimitar las consecuencias de sus errores sobre los recursos de la empresa.
+        </p>
+
+        <!-- 3.1 AUTONOMÍA -->
+        <div class="bg-white p-3 sm:p-4 rounded-xl border-2 border-slate-900 space-y-3 text-xs sm:text-sm">
+          <h4 class="font-black text-purple-900 text-sm sm:text-base border-b pb-1">3.1 ¿Cómo se Mide el Grado de Autonomía?</h4>
+          
+          <ul class="list-disc list-inside space-y-1.5 text-slate-700 text-xs">
+            <li><strong>Nivel de Supervisión Recibida:</strong> Mide si el puesto trabaja bajo supervisión estrecha paso a paso (revisión diaria), supervisión periódica o autogestión completa por objetivos.</li>
+            <li><strong>Toma de Decisiones y Solución de Problemas:</strong> Margen para elegir alternativas ante emergencias operativas sin esperar la firma de un jefe.</li>
+            <li><strong>Autogestión del Trabajo (Teletrabajo / Híbrido - Res. 065-2024 DIAN):</strong> En entornos modernos, evalúa la capacidad del trabajador para administrar responsablemente su tiempo, información y herramientas digitales alcanzando metas con transparencia.</li>
+          </ul>
+
+          <div class="bg-yellow-100 p-3 rounded-lg border border-yellow-800 text-xs font-bold text-slate-800 grid grid-cols-2 sm:grid-cols-4 gap-2 text-center">
+            <div><strong>Nivel Directivo:</strong> Alta autonomía (Toma rumbo estratégico)</div>
+            <div><strong>Nivel Profesional:</strong> Autonomía técnica (Aplica diagnósticos)</div>
+            <div><strong>Nivel Técnico:</strong> Autonomía supervisada (Coordina con pautas)</div>
+            <div><strong>Nivel Operativo:</strong> Supervisión estrecha (Sigue instrucciones fijas)</div>
+          </div>
+        </div>
+
+        <!-- 3.2 RESPONSABILIDAD -->
+        <div class="bg-white p-3 sm:p-4 rounded-xl border-2 border-slate-900 space-y-3 text-xs sm:text-sm">
+          <h4 class="font-black text-purple-900 text-sm sm:text-base border-b pb-1">3.2 Las 5 Áreas de Responsabilidad en un Puesto de Trabajo</h4>
+          
+          <div class="grid grid-cols-1 sm:grid-cols-5 gap-2 text-center text-[10px] sm:text-xs font-bold">
+            <div class="bg-purple-50 p-2.5 rounded-lg border border-purple-900 space-y-1">
+              <span class="block font-black text-purple-900 text-xs">1. Personas</span>
+              Colaboradores directos a cargo, delegación y liderazgo.
+            </div>
+            <div class="bg-purple-50 p-2.5 rounded-lg border border-purple-900 space-y-1">
+              <span class="block font-black text-purple-900 text-xs">2. Presupuestos</span>
+              Montos financieros bajo su firma, compras y caja menor.
+            </div>
+            <div class="bg-purple-50 p-2.5 rounded-lg border border-purple-900 space-y-1">
+              <span class="block font-black text-purple-900 text-xs">3. Infraestructura</span>
+              Custodia de vehículos, mercancía, bodega y equipos.
+            </div>
+            <div class="bg-purple-50 p-2.5 rounded-lg border border-purple-900 space-y-1">
+              <span class="block font-black text-purple-900 text-xs">4. Información</span>
+              Bases de datos de clientes, rutas secretas y finanzas.
+            </div>
+            <div class="bg-purple-50 p-2.5 rounded-lg border border-purple-900 space-y-1">
+              <span class="block font-black text-purple-900 text-xs">5. Seguridad Terceros</span>
+              Garantizar la protección física de motorizados y peatones.
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- RETO 2 -->
+      <div class="sticker-card bg-white p-4 sm:p-6 border-4 border-slate-900 rounded-2xl">
+        <h3 class="text-lg sm:text-xl font-black text-purple-900 mb-4 flex items-center gap-2 border-b-2 border-purple-900 pb-2">
+          <i class="fa-solid fa-sliders text-cyan-500"></i> RETO 2: CALIBRACIÓN DEL PUESTO "COORDINADOR DE OPERACIONES URBANAS"
+        </h3>
+
+        <div class="space-y-6">
+          <div>
+            <div class="flex justify-between items-center mb-1">
+              <label for="slider-1" class="text-xs font-black text-slate-800 uppercase">1. Autonomía en Toma de Decisiones y Ruteo de Entregas:</label>
+              <span id="val-slider-1" class="font-black text-purple-900 bg-purple-100 px-2 py-0.5 rounded border border-purple-900 text-xs">50% - Moderado</span>
+            </div>
+            <input type="range" id="slider-1" min="0" max="100" value="50" oninput="updateSlider('slider-1', 'val-slider-1')" class="w-full accent-purple-700 h-4 bg-slate-200 rounded-lg cursor-pointer border-2 border-slate-900" />
+            <p class="text-[11px] text-slate-500 font-semibold mt-1">Define si puede reprogramar rutas solo (100%) o si debe pedir permiso a la gerencia (0%).</p>
+          </div>
+
+          <div>
+            <div class="flex justify-between items-center mb-1">
+              <label for="slider-2" class="text-xs font-black text-slate-800 uppercase">2. Responsabilidad por Valores, Dinero en Efectivo y Reembolsos:</label>
+              <span id="val-slider-2" class="font-black text-purple-900 bg-purple-100 px-2 py-0.5 rounded border border-purple-900 text-xs">30% - Bajo</span>
+            </div>
+            <input type="range" id="slider-2" min="0" max="100" value="30" oninput="updateSlider('slider-2', 'val-slider-2')" class="w-full accent-purple-700 h-4 bg-slate-200 rounded-lg cursor-pointer border-2 border-slate-900" />
+            <p class="text-[11px] text-slate-500 font-semibold mt-1">Mide qué monto de dinero o liquidación de cobros maneja directamente.</p>
+          </div>
+
+          <div>
+            <div class="flex justify-between items-center mb-1">
+              <label for="slider-3" class="text-xs font-black text-slate-800 uppercase">3. Responsabilidad por Información Confidencial y Datos de Clientes:</label>
+              <span id="val-slider-3" class="font-black text-purple-900 bg-purple-100 px-2 py-0.5 rounded border border-purple-900 text-xs">80% - Alto</span>
+            </div>
+            <input type="range" id="slider-3" min="0" max="100" value="80" oninput="updateSlider('slider-3', 'val-slider-3')" class="w-full accent-purple-700 h-4 bg-slate-200 rounded-lg cursor-pointer border-2 border-slate-900" />
+            <p class="text-[11px] text-slate-500 font-semibold mt-1">Evalúa el nivel de custodia sobre direcciones, teléfonos y claves del software de entregas.</p>
+          </div>
+
+          <!-- GUÍA EXPLICATIVA PARA REDACTAR EL ÍTEM 2 -->
+          <div class="concept-box p-3 sm:p-4 text-xs text-slate-800 space-y-1">
+            <strong class="block font-black text-green-950 text-sm">💡 Orientación para redactar tu respuesta (Ítem 2):</strong>
+            <p>
+              Resume la calibración del Coordinador de Operaciones. Justifica por qué le asignaste esos porcentajes específicos en ruteo, presupuesto y datos, explicando claramente cuáles son las 5 áreas de responsabilidad que debe proteger en su día a día.
+            </p>
+          </div>
+
+          <div>
+            <label for="item-2" class="block text-xs font-black text-slate-700 uppercase mb-1">
+              Síntesis de la Matriz de Autonomía y Responsabilidad (Ítem 2) (*):
+            </label>
+            <textarea id="item-2" rows="4" placeholder="Argumenta la calibración del puesto redactando límites claros de decisión..." class="w-full bg-slate-50 font-bold p-3 rounded-xl border-2 border-slate-900 focus:bg-yellow-100 text-sm"></textarea>
+          </div>
+        </div>
+
+        <div class="mt-6 flex flex-col sm:flex-row justify-between gap-3">
+          <button type="button" onclick="showScreen('pantalla-1')" class="sticker-button w-full sm:w-auto bg-slate-200 hover:bg-slate-300 text-slate-800 font-black py-2.5 px-5 rounded-xl text-sm text-center">
+            <i class="fa-solid fa-arrow-left"></i> Anterior
+          </button>
+          <button type="button" onclick="showScreen('pantalla-3')" class="sticker-button w-full sm:w-auto bg-purple-700 hover:bg-purple-800 text-white font-black py-2.5 px-5 rounded-xl text-sm text-center">
+            Siguiente: Constructor KSAO <i class="fa-solid fa-arrow-right"></i>
+          </button>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- PANTALLA 3: ESTACIÓN 3 (CONSTRUCTOR DE COMPETENCIAS KSAO) -->
+    <div id="pantalla-3" class="screen-content space-y-6 hidden">
+      
+      <!-- INSTRUCCIÓN DE LA ESTACIÓN 3 -->
+      <div class="instruction-banner no-print p-4 text-slate-900 space-y-2">
+        <div class="flex items-center gap-2 font-black text-sm sm:text-base text-purple-950 uppercase border-b-2 border-slate-900 pb-1">
+          <i class="fa-solid fa-circle-info text-purple-800 text-lg"></i>
+          <span>Instrucciones Estación 3: Construcción del Perfil KSAO</span>
+        </div>
+        <ol class="list-decimal list-inside text-xs sm:text-sm font-semibold space-y-1 text-slate-800">
+          <li>Revisa la explicación teórica del modelo internacional <strong>KSAO</strong> y el marco comportamental de la <strong>DIAN</strong>.</li>
+          <li>Completa las 4 cajas con los requisitos específicos para el puesto de <strong>Coordinador de Operaciones Urbanas</strong>: 2 conocimientos (K), 2 destrezas (S), 2 capacidades (A) y 3 atributos comportamentales (O).</li>
+          <li>Sintetiza en el <strong>Ítem 3</strong> el perfil estructurado explicando cómo estas competencias resuelven la desorganización de la empresa.</li>
+        </ol>
+      </div>
+
+      <!-- MARCO TEÓRICO COMPLETO EXPLICADO EN DETALLE - SECCIÓN 4 -->
+      <div class="sticker-card bg-purple-50 border-4 border-slate-900 p-4 sm:p-6 rounded-2xl space-y-4">
+        <h3 class="text-lg sm:text-xl font-black text-purple-900 flex items-center gap-2 border-b-4 border-purple-900 pb-2">
+          <i class="fa-solid fa-book-open text-purple-600"></i> BLOQUE TEÓRICO COMPLETO: EL MODELO INTERNACIONAL KSAO
+        </h3>
+
+        <div class="bg-white p-3 sm:p-4 rounded-xl border-2 border-slate-900 space-y-3 text-xs sm:text-sm">
+          <h4 class="font-black text-purple-900 text-sm sm:text-base border-b pb-1">4.1 ¿Qué Significa Cada Letra del Modelo KSAO?</h4>
+          <p class="text-slate-700 leading-relaxed">
+            El modelo <strong>KSAO</strong> es el estándar internacional para redactar requisitos de contratación de manera objetiva:
+          </p>
+
+          <div class="grid grid-cols-1 sm:grid-cols-4 gap-3 text-xs">
+            <div class="bg-slate-50 p-3 rounded-xl border-2 border-slate-900 space-y-1">
+              <span class="block font-black text-purple-900 text-sm">K - Knowledge (Saber)</span>
+              <p class="text-slate-600 text-[11px]">Conocimiento teórico formal, formación académica, títulos y certificados normativos requeridos.</p>
+            </div>
+            <div class="bg-slate-50 p-3 rounded-xl border-2 border-slate-900 space-y-1">
+              <span class="block font-black text-purple-900 text-sm">S - Skills (Hacer)</span>
+              <p class="text-slate-600 text-[11px]">Destrezas prácticas aprendidas mediante entrenamiento (manejo de software WMS, ruteo digital).</p>
+            </div>
+            <div class="bg-slate-50 p-3 rounded-xl border-2 border-slate-900 space-y-1">
+              <span class="block font-black text-purple-900 text-sm">A - Abilities (Poder)</span>
+              <p class="text-slate-600 text-[11px]">Capacidades cognitivas y fisiológicas (razonamiento lógico, resistencia física, orientación espacial).</p>
+            </div>
+            <div class="bg-slate-50 p-3 rounded-xl border-2 border-slate-900 space-y-1">
+              <span class="block font-black text-purple-900 text-sm">O - Other (Ser)</span>
+              <p class="text-slate-600 text-[11px]">Atributos personales, ética y conductas observables que aseguran una convivencia armónica.</p>
+            </div>
+          </div>
+
+          <div class="bg-purple-100 p-3 rounded-xl border border-purple-900 text-xs text-slate-800 space-y-1">
+            <strong class="block text-purple-950 font-black">Taxonomía Comportamental de la DIAN:</strong>
+            <p class="leading-relaxed">
+              • <strong>Básicas:</strong> Adaptabilidad, comportamiento ético, comunicación efectiva, orientación al logro, servicio al usuario y trabajo en equipo.
+              <br>• <strong>Gerenciales:</strong> Liderazgo, visión estratégica y desarrollo del talento humano.
+              <br>• <strong>Específicas / Adaptativas:</strong> Iniciativa, innovación, solución de problemas y habilidades digitales.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <!-- RETO 3 -->
+      <div class="sticker-card bg-white p-4 sm:p-6 border-4 border-slate-900 rounded-2xl">
+        <h3 class="text-lg sm:text-xl font-black text-purple-900 mb-4 flex items-center gap-2 border-b-2 border-purple-900 pb-2">
+          <i class="fa-solid fa-cubes text-lime-500"></i> RETO 3: FICHA KSAO DEL COORDINADOR DE OPERACIONES
+        </h3>
+
+        <div class="space-y-4">
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <label for="ksao-k" class="block text-xs font-black text-purple-900 uppercase mb-1">
+                K - Conocimientos Requeridos (2 claves) (*):
+              </label>
+              <textarea id="ksao-k" rows="2" placeholder="Ej: 1. Certificado en Software de Logística WMS. 2. Normativa de transporte urbano de carga..." class="w-full bg-slate-50 font-bold p-2.5 rounded-xl border-2 border-slate-900 focus:bg-yellow-100 text-sm"></textarea>
+            </div>
+            <div>
+              <label for="ksao-s" class="block text-xs font-black text-purple-900 uppercase mb-1">
+                S - Destrezas Prácticas (2 claves) (*):
+              </label>
+              <textarea id="ksao-s" rows="2" placeholder="Ej: 1. Manejo fluido de plataformas de GPS y ruteo. 2. Destreza en negociación con despachadores..." class="w-full bg-slate-50 font-bold p-2.5 rounded-xl border-2 border-slate-900 focus:bg-yellow-100 text-sm"></textarea>
+            </div>
+            <div>
+              <label for="ksao-a" class="block text-xs font-black text-purple-900 uppercase mb-1">
+                A - Capacidades Físicas / Mentales (2 claves) (*):
+              </label>
+              <textarea id="ksao-a" rows="2" placeholder="Ej: 1. Razonamiento espacial acelerado. 2. Alta tolerancia al trabajo bajo presión..." class="w-full bg-slate-50 font-bold p-2.5 rounded-xl border-2 border-slate-900 focus:bg-yellow-100 text-sm"></textarea>
+            </div>
+            <div>
+              <label for="ksao-o" class="block text-xs font-black text-purple-900 uppercase mb-1">
+                O - Atributos Comportamentales (DIAN / 3 conductas) (*):
+              </label>
+              <textarea id="ksao-o" rows="2" placeholder="Ej: 1. Orientación al logro. 2. Comportamiento ético e intachable. 3. Adaptabilidad al cambio..." class="w-full bg-slate-50 font-bold p-2.5 rounded-xl border-2 border-slate-900 focus:bg-yellow-100 text-sm"></textarea>
+            </div>
+          </div>
+
+          <!-- GUÍA EXPLICATIVA PARA REDACTAR EL ÍTEM 3 -->
+          <div class="concept-box p-3 sm:p-4 text-xs text-slate-800 space-y-1">
+            <strong class="block font-black text-green-950 text-sm">💡 Orientación para redactar tu respuesta (Ítem 3):</strong>
+            <p>
+              Sintetiza la Ficha KSAO del puesto rediseñado. Explica cómo la combinación de estos conocimientos, destrezas, capacidades y conductas solucionará los problemas de rotación y pérdida de paquetes en Express-Logistics S.A.S.
+            </p>
+          </div>
+
+          <div>
+            <label for="item-3" class="block text-xs font-black text-slate-700 uppercase mb-1">
+              Estructura Consolidada del Perfil KSAO (Ítem 3) (*):
+            </label>
+            <textarea id="item-3" rows="4" placeholder="Sintetiza la Ficha KSAO consolidada para la empresa cliente..." class="w-full bg-slate-50 font-bold p-3 rounded-xl border-2 border-slate-900 focus:bg-yellow-100 text-sm"></textarea>
+          </div>
+        </div>
+
+        <div class="mt-6 flex flex-col sm:flex-row justify-between gap-3">
+          <button type="button" onclick="showScreen('pantalla-2')" class="sticker-button w-full sm:w-auto bg-slate-200 hover:bg-slate-300 text-slate-800 font-black py-2.5 px-5 rounded-xl text-sm text-center">
+            <i class="fa-solid fa-arrow-left"></i> Anterior
+          </button>
+          <button type="button" onclick="showScreen('pantalla-4')" class="sticker-button w-full sm:w-auto bg-purple-700 hover:bg-purple-800 text-white font-black py-2.5 px-5 rounded-xl text-sm text-center">
+            Siguiente: Informe &amp; Exit Ticket <i class="fa-solid fa-arrow-right"></i>
+          </button>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- PANTALLA 4: INFORME FINAL, EXIT TICKET & ENVÍO -->
+    <div id="pantalla-4" class="screen-content space-y-6 hidden">
+      
+      <!-- INSTRUCCIÓN DE LA PANTALLA 4 -->
+      <div class="instruction-banner no-print p-4 text-slate-900 space-y-2">
+        <div class="flex items-center gap-2 font-black text-sm sm:text-base text-purple-950 uppercase border-b-2 border-slate-900 pb-1">
+          <i class="fa-solid fa-circle-info text-purple-800 text-lg"></i>
+          <span>Instrucciones Finales: Reflexión, Envió y Descarga de PDF</span>
+        </div>
+        <ol class="list-decimal list-inside text-xs sm:text-sm font-semibold space-y-1 text-slate-800">
+          <li>Responde individualmente las 2 preguntas de reflexión del <strong>Exit Ticket</strong> (Ítem 4 e Ítem 5).</li>
+          <li>Haz clic en el botón violeta <strong>"1. Enviar Trabajo"</strong> para transmitir las respuestas de tu equipo a Google Sheets.</li>
+          <li>Una vez confirmado el envío, se desbloqueará el botón amarillo <strong>"2. Exportar PDF"</strong>. Haz clic para abrir el informe de evidencia e imprimirlo o guardarlo.</li>
+          <li>Revisa la <strong>Rúbrica Institucional</strong> para verificar la calidad de tus 5 respuestas antes de cerrar.</li>
+        </ol>
+      </div>
+
+      <!-- EXIT TICKET INDIVIDUAL -->
+      <div class="sticker-card bg-lime-50 border-4 border-slate-900 p-4 sm:p-6 rounded-2xl">
+        <h3 class="text-lg sm:text-xl font-black text-purple-900 mb-3 flex items-center gap-2 border-b-2 border-purple-900 pb-2">
+          <i class="fa-solid fa-ticket text-lime-600"></i> EXIT TICKET / REFLEXIÓN INDIVIDUAL DE APRENDIZAJE
+        </h3>
+        
+        <div class="space-y-4">
+          <div>
+            <label for="item-4" class="block text-xs font-black text-slate-800 uppercase mb-1">
+              Pregunta 1 (Ítem 4): ¿Cuál es la diferencia principal entre hacer un análisis de puesto para RRHH y uno para SST? (*)
+            </label>
+            <p class="text-[11px] text-slate-600 font-semibold mb-1">Explica con tus palabras la diferencia entre buscar productividad y buscar salud ergonómica/prevención legal.</p>
+            <textarea id="item-4" rows="3" placeholder="Responde en tus propias palabras basándote en la sesión..." class="w-full bg-white font-bold p-3 rounded-xl border-2 border-slate-900 focus:bg-yellow-100 text-sm"></textarea>
+          </div>
+
+          <div>
+            <label for="item-5" class="block text-xs font-black text-slate-800 uppercase mb-1">
+              Pregunta 2 (Ítem 5): ¿Cómo medirías la responsabilidad por información confidencial en un puesto de oficina o teletrabajo? (*)
+            </label>
+            <p class="text-[11px] text-slate-600 font-semibold mb-1">Propone un ejemplo práctico de indicador o regla de seguridad sobre el uso de claves y datos de clientes.</p>
+            <textarea id="item-5" rows="3" placeholder="Escribe un ejemplo de medición o criterio de responsabilidad..." class="w-full bg-white font-bold p-3 rounded-xl border-2 border-slate-900 focus:bg-yellow-100 text-sm"></textarea>
+          </div>
+        </div>
+      </div>
+
+      <!-- BOTONES DE ACCIÓN, ENVÍO Y GENERACIÓN DE REPORTE -->
+      <div class="sticker-card no-print bg-white p-4 sm:p-6 border-4 border-slate-900 rounded-2xl">
+        <h3 class="text-lg sm:text-xl font-black text-purple-900 mb-4 flex items-center gap-2 border-b-2 border-purple-900 pb-2">
+          <i class="fa-solid fa-paper-plane text-purple-700"></i> ENTREGA Y GENERACIÓN DE EVIDENCIAS
+        </h3>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+          <button type="button" id="btn-send-webhook" onclick="sendToWebhook()" class="sticker-button bg-purple-700 hover:bg-purple-800 text-white font-black py-3 px-4 rounded-xl flex items-center justify-center gap-2 text-sm">
+            <i class="fa-solid fa-cloud-arrow-up"></i> <span>1. Enviar Trabajo</span>
+          </button>
+
+          <button type="button" id="btn-open-pdf" onclick="openPreview()" disabled class="sticker-button bg-slate-300 text-slate-500 font-black py-3 px-4 rounded-xl flex items-center justify-center gap-2 text-sm cursor-not-allowed opacity-75">
+            <i class="fa-solid fa-lock" id="pdf-lock-icon"></i> <span>2. Exportar PDF</span>
+          </button>
+
+          <button type="button" onclick="downloadBackup()" class="sticker-button bg-cyan-500 hover:bg-cyan-600 text-slate-950 font-black py-3 px-4 rounded-xl flex items-center justify-center gap-2 text-sm">
+            <i class="fa-solid fa-download"></i> <span>Descargar JSON</span>
+          </button>
+
+          <label class="sticker-button bg-slate-200 hover:bg-slate-300 text-slate-900 font-black py-3 px-4 rounded-xl flex items-center justify-center gap-2 text-sm cursor-pointer text-center">
+            <i class="fa-solid fa-upload"></i> <span>Cargar JSON</span>
+            <input type="file" id="json-file-input" onchange="handleFileUpload(event)" accept=".json" class="hidden" />
+          </label>
+        </div>
+
+        <div id="status-message" class="mt-4 hidden p-3 rounded-xl border-2 border-slate-900 font-bold text-center text-sm"></div>
+      </div>
+
+      <!-- RÚBRICA DE EVALUACIÓN TRANSCRIBA ÍNTEGRA -->
+      <div class="sticker-card bg-slate-50 p-4 sm:p-6 border-4 border-slate-900 rounded-2xl overflow-x-auto">
+        <h3 class="text-base sm:text-lg font-black text-purple-900 mb-3 flex items-center gap-2 border-b-2 border-purple-900 pb-2">
+          <i class="fa-solid fa-table-list"></i> RÚBRICA INSTITUCIONAL DE EVALUACIÓN (5 ÍTEMS)
+        </h3>
+        <table class="w-full text-left text-xs font-medium border-collapse border-2 border-slate-900 bg-white min-w-[600px]">
+          <thead>
+            <tr class="bg-purple-900 text-white font-black text-center">
+              <th class="p-2 border-2 border-slate-900">Criterio / Ítem</th>
+              <th class="p-2 border-2 border-slate-900">Excelente (5.0)</th>
+              <th class="p-2 border-2 border-slate-900">Bueno (4.0)</th>
+              <th class="p-2 border-2 border-slate-900">Aceptable (3.0)</th>
+              <th class="p-2 border-2 border-slate-900">Insuficiente (1.0-2.0)</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y border-2 border-slate-900">
+            <tr>
+              <td class="p-2 font-black border-2 border-slate-900 bg-purple-50">1. Diagnóstico de Levantamiento (Ítem 1)</td>
+              <td class="p-2 border">Asocia correctamente las 3 técnicas justificando con precisión técnica la diferencia RRHH/SST.</td>
+              <td class="p-2 border">Asocia 2 técnicas correctamente con justificación clara.</td>
+              <td class="p-2 border">Asocia 1 técnica con justificación superficial.</td>
+              <td class="p-2 border">No justifica o no selecciona técnicas coherentes.</td>
+            </tr>
+            <tr>
+              <td class="p-2 font-black border-2 border-slate-900 bg-purple-50">2. Matriz de Autonomía (Ítem 2)</td>
+              <td class="p-2 border">Calibra con total coherencia los niveles de decisión y las 5 áreas de responsabilidad.</td>
+              <td class="p-2 border">Calibra los sliders argumentando 3 de las 5 áreas.</td>
+              <td class="p-2 border">Calibración básica sin delimitar claramente los niveles de supervisión.</td>
+              <td class="p-2 border">Omite la matriz de autonomía.</td>
+            </tr>
+            <tr>
+              <td class="p-2 font-black border-2 border-slate-900 bg-purple-50">3. Constructor KSAO (Ítem 3)</td>
+              <td class="p-2 border">Estructura íntegramente las 4 dimensiones KSAO articulando con competencias DIAN.</td>
+              <td class="p-2 border">Completa las 4 dimensiones con imprecisión menor en Abilities u Other.</td>
+              <td class="p-2 border">Estructura incompleta (solo 2 dimensiones completas).</td>
+              <td class="p-2 border">No aplica el modelo KSAO.</td>
+            </tr>
+            <tr>
+              <td class="p-2 font-black border-2 border-slate-900 bg-purple-50">4. Exit Ticket: RRHH vs SST (Ítem 4)</td>
+              <td class="p-2 border">Diferencia con nitidez los enfoques de productividad vs prevención ergonómica/legal.</td>
+              <td class="p-2 border">Diferencia los conceptos sin mencionar la normativa aplicable.</td>
+              <td class="p-2 border">Respuesta confusa que traslapa ambos enfoques.</td>
+              <td class="p-2 border">No responde o respuesta errónea.</td>
+            </tr>
+            <tr>
+              <td class="p-2 font-black border-2 border-slate-900 bg-purple-50">5. Exit Ticket: Confidencialidad (Ítem 5)</td>
+              <td class="p-2 border">Propone un criterio de medición práctico y contextualizado al trabajo remoto.</td>
+              <td class="p-2 border">Propone un ejemplo válido pero genérico.</td>
+              <td class="p-2 border">Ejemplo poco claro sin indicador medible.</td>
+              <td class="p-2 border">No responde.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+    </div>
+
+  </main>
+
+  <!-- FOOTER INSTITUCIONAL -->
+  <footer class="no-print bg-purple-950 text-slate-300 border-t-4 border-slate-900 py-4 px-4 text-center text-xs font-bold mt-auto">
+    <div class="max-w-7xl mx-auto flex flex-col sm:flex-row justify-between items-center gap-2">
+      <span>Instituto i3 © 2026 - Módulo de Estructuración de Perfiles de Cargo</span>
+      <span>Diseñado por el Equipo de Miguel Cruz | Versión Tecnopedagógica</span>
+    </div>
+  </footer>
+
+  <!-- LÓGICA JAVASCRIPT INTEGRADA Y COMPATIBLE -->
+  <script>
+    // ARCHITECTURE STAMP AND CONSTANTS
+    const ACTIVIDAD_ID = "Perfiles1_ACT03";
+    const WEBHOOK_URL = "https://script.google.com/macros/s/AKfycbykP5mOpfvgjO-R3aMf2t8tzAg-nc5Tc2cpVmtpRh33C-ZwYUW9G9-CWr-bq7zVEv5s/exec";
+    
+    let isSubmitted = false;
+    let timerInterval = null;
+
+    // MAP OF VALUE CODES TO HUMAN READABLE LABELS FOR PREVIEW & REPORTS
+    const TECNICAS_MAP = {
+      'AET': 'Evaluación Ergonómica en Campo (AET / Análisis SST)',
+      'DACUM': 'Panel de Expertos DACUM (SME)',
+      'MPDQ': 'Cuestionario Management Position Description Questionnaire (MPDQ)',
+      'Observacion': 'Observación Directa en Campo',
+      'Clasico': 'Análisis Ocupacional Clásico / Observación e Historial'
+    };
+
+    // UTILITY: HTML ESCAPING FOR PDF / PREVIEW SAFETY
+    function escapeHtml(text) {
+      if (!text) return '';
+      return String(text)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#039;');
+    }
+
+    // CONTROL DE NAVEGACIÓN ENTRE PANTALLAS
+    function showScreen(screenId) {
+      document.querySelectorAll('.screen-content').forEach(s => s.classList.add('hidden'));
+      const target = document.getElementById(screenId);
+      if (target) target.classList.remove('hidden');
+      
+      document.querySelectorAll('.nav-tab').forEach(b => {
+        b.classList.remove('bg-yellow-400', 'text-purple-950');
+        b.classList.add('bg-purple-700', 'text-white');
+      });
+
+      const activeBtn = document.getElementById('nav-btn-' + screenId);
+      if (activeBtn) {
+        activeBtn.classList.remove('bg-purple-700', 'text-white');
+        activeBtn.classList.add('bg-yellow-400', 'text-purple-950');
+      }
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    // SLIDERS INTERACTIVOS
+    function updateSlider(sliderId, displayId) {
+      const el = document.getElementById(sliderId);
+      if (!el) return;
+      const val = el.value;
+      let label = val + "%";
+      if (val < 35) label += " - Bajo";
+      else if (val < 70) label += " - Moderado";
+      else label += " - Alto";
+      const disp = document.getElementById(displayId);
+      if (disp) disp.innerText = label;
+      saveToLocalStorage();
+    }
+
+    // CAPTURA ESTÁNDAR DE DATOS
+    function getFormData() {
+      return {
+        materia: document.getElementById('input-materia')?.value || "Estructurar Perfiles de Cargo",
+        actividad_id: ACTIVIDAD_ID,
+        grupo: document.getElementById('input-grupo')?.value || "",
+        participantes: document.getElementById('input-participantes')?.value || "",
+        caso_a: document.getElementById('select-caso-a')?.value || "",
+        caso_b: document.getElementById('select-caso-b')?.value || "",
+        caso_c: document.getElementById('select-caso-c')?.value || "",
+        item1: document.getElementById('item-1')?.value || "",
+        slider1: document.getElementById('slider-1')?.value || "50",
+        slider2: document.getElementById('slider-2')?.value || "30",
+        slider3: document.getElementById('slider-3')?.value || "80",
+        item2: document.getElementById('item-2')?.value || "",
+        ksao_k: document.getElementById('ksao-k')?.value || "",
+        ksao_s: document.getElementById('ksao-s')?.value || "",
+        ksao_a: document.getElementById('ksao-a')?.value || "",
+        ksao_o: document.getElementById('ksao-o')?.value || "",
+        item3: document.getElementById('item-3')?.value || "",
+        item4: document.getElementById('item-4')?.value || "",
+        item5: document.getElementById('item-5')?.value || "",
+        estado: isSubmitted ? "Entregado" : "Borrador"
+      };
+    }
+
+    // VALIDACIÓN DE CAMPOS OBLIGATORIOS
+    function validateForm() {
+      const data = getFormData();
+      const missing = [];
+
+      if (!data.grupo.trim()) missing.push("Nombre de la Firma Consultora");
+      if (!data.participantes.trim()) missing.push("Integrantes de la Firma");
+      if (!data.caso_a) missing.push("Estación 1: Selección Caso A");
+      if (!data.caso_b) missing.push("Estación 1: Selección Caso B");
+      if (!data.caso_c) missing.push("Estación 1: Selección Caso C");
+      if (!data.item1.trim()) missing.push("Estación 1: Justificación Ítem 1");
+      if (!data.item2.trim()) missing.push("Estación 2: Síntesis Ítem 2");
+      if (!data.ksao_k.trim()) missing.push("Estación 3: K - Conocimientos");
+      if (!data.ksao_s.trim()) missing.push("Estación 3: S - Destrezas");
+      if (!data.ksao_a.trim()) missing.push("Estación 3: A - Capacidades");
+      if (!data.ksao_o.trim()) missing.push("Estación 3: O - Atributos");
+      if (!data.item3.trim()) missing.push("Estación 3: Síntesis Ítem 3");
+      if (!data.item4.trim()) missing.push("Exit Ticket: Pregunta 1 (Ítem 4)");
+      if (!data.item5.trim()) missing.push("Exit Ticket: Pregunta 2 (Ítem 5)");
+
+      return missing;
+    }
+
+    // AUTOGUARDADO EN LOCALSTORAGE CON TRY/CATCH
+    function saveToLocalStorage() {
+      try {
+        const data = getFormData();
+        localStorage.setItem('i3_perfiles1_act03_data', JSON.stringify(data));
+      } catch (e) {
+        console.warn("Storage warning: Unable to save locally.", e);
+      }
+    }
+
+    function loadFromLocalStorage() {
+      try {
+        const saved = localStorage.getItem('i3_perfiles1_act03_data');
+        if (saved) {
+          const data = JSON.parse(saved);
+          document.getElementById('input-materia').value = data.materia || "Estructurar Perfiles de Cargo";
+          document.getElementById('input-grupo').value = data.grupo || "";
+          document.getElementById('input-participantes').value = data.participantes || "";
+          document.getElementById('select-caso-a').value = data.caso_a || "";
+          document.getElementById('select-caso-b').value = data.caso_b || "";
+          document.getElementById('select-caso-c').value = data.caso_c || "";
+          document.getElementById('item-1').value = data.item1 || "";
+          document.getElementById('item-2').value = data.item2 || "";
+          document.getElementById('item-3').value = data.item3 || "";
+          document.getElementById('item-4').value = data.item4 || "";
+          document.getElementById('item-5').value = data.item5 || "";
+          document.getElementById('ksao-k').value = data.ksao_k || "";
+          document.getElementById('ksao-s').value = data.ksao_s || "";
+          document.getElementById('ksao-a').value = data.ksao_a || "";
+          document.getElementById('ksao-o').value = data.ksao_o || "";
+          
+          if (data.slider1) {
+            document.getElementById('slider-1').value = data.slider1;
+            updateSlider('slider-1', 'val-slider-1');
+          }
+          if (data.slider2) {
+            document.getElementById('slider-2').value = data.slider2;
+            updateSlider('slider-2', 'val-slider-2');
+          }
+          if (data.slider3) {
+            document.getElementById('slider-3').value = data.slider3;
+            updateSlider('slider-3', 'val-slider-3');
+          }
+
+          if (data.estado === "Entregado") {
+            enablePdfButton();
+          }
+        }
+      } catch (e) {
+        console.error("Error al cargar datos locales:", e);
+      }
+    }
+
+    function enablePdfButton() {
+      isSubmitted = true;
+      const pdfBtn = document.getElementById('btn-open-pdf');
+      const pdfIcon = document.getElementById('pdf-lock-icon');
+      if (pdfBtn) {
+        pdfBtn.disabled = false;
+        pdfBtn.className = "sticker-button bg-yellow-400 hover:bg-yellow-500 text-purple-950 font-black py-3 px-4 rounded-xl flex items-center justify-center gap-2 text-sm";
+      }
+      if (pdfIcon) {
+        pdfIcon.className = "fa-solid fa-file-pdf";
+      }
+    }
+
+    // FIX 3: re-bloqueo del PDF si el estudiante edita después de enviar
+    function lockPdfButton() {
+      isSubmitted = false;
+      const pdfBtn = document.getElementById('btn-open-pdf');
+      const pdfIcon = document.getElementById('pdf-lock-icon');
+      if (pdfBtn) {
+        pdfBtn.disabled = true;
+        pdfBtn.className = "sticker-button bg-slate-300 text-slate-500 font-black py-3 px-4 rounded-xl flex items-center justify-center gap-2 text-sm cursor-not-allowed opacity-75";
+      }
+      if (pdfIcon) {
+        pdfIcon.className = "fa-solid fa-lock";
+      }
+    }
+
+    // RESPALDO JSON COMPLETO
+    function downloadBackup() {
+      const data = getFormData();
+      const safeGroup = (data.grupo || 'Grupo').replace(/[^a-z0-9]/gi, '_').toLowerCase();
+      const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `Respaldo_${ACTIVIDAD_ID}_${safeGroup}.json`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    }
+
+    function handleFileUpload(event) {
+      const file = event.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        try {
+          const data = JSON.parse(e.target.result);
+
+          // FIX 6: rechazar respaldos que no pertenezcan a esta actividad
+          if (data.actividad_id !== ACTIVIDAD_ID) {
+            alert("El archivo seleccionado no corresponde a la actividad " + ACTIVIDAD_ID + ". Verifica que sea el respaldo correcto.");
+            return;
+          }
+          
+          document.getElementById('input-materia').value = data.materia || "Estructurar Perfiles de Cargo";
+          document.getElementById('input-grupo').value = data.grupo || "";
+          document.getElementById('input-participantes').value = data.participantes || "";
+          document.getElementById('select-caso-a').value = data.caso_a || "";
+          document.getElementById('select-caso-b').value = data.caso_b || "";
+          document.getElementById('select-caso-c').value = data.caso_c || "";
+          document.getElementById('item-1').value = data.item1 || "";
+          document.getElementById('item-2').value = data.item2 || "";
+          document.getElementById('item-3').value = data.item3 || "";
+          document.getElementById('item-4').value = data.item4 || "";
+          document.getElementById('item-5').value = data.item5 || "";
+          document.getElementById('ksao-k').value = data.ksao_k || "";
+          document.getElementById('ksao-s').value = data.ksao_s || "";
+          document.getElementById('ksao-a').value = data.ksao_a || "";
+          document.getElementById('ksao-o').value = data.ksao_o || "";
+          
+          if (data.slider1) {
+            document.getElementById('slider-1').value = data.slider1;
+            updateSlider('slider-1', 'val-slider-1');
+          }
+          if (data.slider2) {
+            document.getElementById('slider-2').value = data.slider2;
+            updateSlider('slider-2', 'val-slider-2');
+          }
+          if (data.slider3) {
+            document.getElementById('slider-3').value = data.slider3;
+            updateSlider('slider-3', 'val-slider-3');
+          }
+
+          if (data.estado === "Entregado") {
+            enablePdfButton();
+          }
+
+          saveToLocalStorage();
+          alert("Respaldo JSON restaurado correctamente.");
+        } catch (err) {
+          alert("El archivo seleccionado no es un respaldo JSON válido.");
+        } finally {
+          event.target.value = ""; // Reset input so same file can be loaded again
+        }
+      };
+      reader.readAsText(file);
+    }
+
+    // ENVÍO A GOOGLE SHEETS
+    async function sendToWebhook() {
+      const msgBox = document.getElementById('status-message');
+      msgBox.classList.remove('hidden', 'bg-red-100', 'bg-green-100', 'bg-yellow-100', 'text-red-800', 'text-green-800', 'text-yellow-800');
+
+      const missing = validateForm();
+      if (missing.length > 0) {
+        msgBox.classList.add('bg-yellow-100', 'text-yellow-800');
+        msgBox.innerHTML = `<strong>Atención:</strong> Faltan campos obligatorios antes de enviar:<br><ul class="list-disc list-inside text-left mt-1 font-semibold">${missing.map(m => `<li>${m}</li>`).join('')}</ul>`;
+        return;
+      }
+
+      const sendBtn = document.getElementById('btn-send-webhook');
+      sendBtn.disabled = true;
+      sendBtn.classList.add('opacity-50', 'cursor-not-allowed');
+
+      msgBox.classList.add('bg-blue-100', 'text-blue-800');
+      msgBox.innerText = "Transmitiendo entrega al sistema docente en Google Sheets...";
+
+      const data = getFormData();
+
+      try {
+        // FIX 1: el payload se envía con estado explícito "Entregado";
+        // antes se serializaba antes de enablePdfButton() y llegaba "Borrador".
+        await fetch(WEBHOOK_URL, {
+          method: 'POST',
+          mode: 'no-cors',
+          headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+          body: JSON.stringify({ ...data, estado: "Entregado" })
+        });
+
+        enablePdfButton();
+        saveToLocalStorage();
+
+        msgBox.classList.remove('bg-blue-100', 'text-blue-800');
+        msgBox.classList.add('bg-green-100', 'text-green-800');
+        msgBox.innerHTML = "<strong>¡Trabajo enviado al docente!</strong> El botón para exportar tu informe PDF ha sido desbloqueado.";
+      } catch (err) {
+        msgBox.classList.remove('bg-blue-100', 'text-blue-800');
+        msgBox.classList.add('bg-red-100', 'text-red-800');
+        msgBox.innerText = "No se pudo transmitir la entrega. Por favor verifica tu conexión a internet o descarga el archivo JSON de respaldo.";
+      } finally {
+        sendBtn.disabled = false;
+        sendBtn.classList.remove('opacity-50', 'cursor-not-allowed');
+      }
+    }
+
+    // VISTA PREVIA E IMPRESIÓN PDF
+    function openPreview() {
+      if (!isSubmitted) {
+        alert("Debes transmitir tu trabajo haciendo clic en '1. Enviar Trabajo' antes de generar la evidencia en PDF.");
+        return;
+      }
+
+      const d = getFormData();
+      const win = window.open('', '_blank');
+
+      if (!win) {
+        alert("El navegador bloqueó la ventana emergente del reporte. Por favor permite las ventanas emergentes para este sitio.");
+        return;
+      }
+
+      const casoANombre = TECNICAS_MAP[d.caso_a] || d.caso_a || 'Sin selección';
+      const casoBNombre = TECNICAS_MAP[d.caso_b] || d.caso_b || 'Sin selección';
+      const casoCNombre = TECNICAS_MAP[d.caso_c] || d.caso_c || 'Sin selección';
+
+      win.document.write(`
+        <!DOCTYPE html>
+        <html lang="es">
+        <head>
+          <meta charset="UTF-8">
+          <meta name="viewport" content="width=device-width, initial-scale=1.0">
+          <title>Informe - ${escapeHtml(d.actividad_id)} - ${escapeHtml(d.grupo)}</title>
+          <style>
+            /* FIX 7: márgenes consistentes al guardar como PDF */
+            @page { size: A4; margin: 15mm; }
+            * { box-sizing: border-box; }
+            body { 
+              font-family: system-ui, -apple-system, sans-serif; 
+              padding: 20px; 
+              color: #1e293b; 
+              line-height: 1.4; 
+              max-width: 800px;
+              margin: 0 auto;
+              overflow-wrap: break-word;
+              word-break: break-word;
+              -webkit-print-color-adjust: exact;
+              print-color-adjust: exact;
+            }
+            h1 { color: #1e40af; border-bottom: 3px solid #1e40af; padding-bottom: 4px; margin-bottom: 8px; font-size: 20px; }
+            h2 { color: #3b82f6; font-size: 14px; margin-top: 16px; margin-bottom: 4px; border-bottom: 1px solid #cbd5e1; }
+            .meta { background: #f8fafc; padding: 10px; border-radius: 6px; border: 1px solid #e2e8f0; font-size: 12px; margin-bottom: 12px; }
+            .box { border: 1px solid #cbd5e1; border-radius: 6px; padding: 10px; margin-top: 4px; background: #fafafa; font-size: 12px; white-space: pre-wrap; overflow-wrap: anywhere; word-break: break-word; }
+            .no-print { margin-bottom: 16px; text-align: right; }
+            .btn-print { background: #1e40af; color: white; border: none; padding: 8px 16px; border-radius: 6px; font-weight: bold; cursor: pointer; font-size: 13px; }
+            @media print { 
+              .no-print { display: none !important; } 
+              body { padding: 0; max-width: 100%; } 
+            }
+          </style>
+        </head>
+        <body>
+          <div class="no-print">
+            <button onclick="window.print()" class="btn-print">🖨️ Imprimir o Guardar como PDF</button>
+          </div>
+          <h1>INFORME DE CONSULTORÍA OCUPACIONAL - INSTITUTO i3</h1>
+          <div class="meta">
+            <strong>ID Actividad:</strong> ${escapeHtml(d.actividad_id)}<br>
+            <strong>Materia:</strong> ${escapeHtml(d.materia)}<br>
+            <strong>Firma Consultora / Grupo:</strong> ${escapeHtml(d.grupo)}<br>
+            <strong>Integrantes:</strong> ${escapeHtml(d.participantes)}<br>
+            <strong>Estado:</strong> Entregado
+          </div>
+
+          <h2>1. Diagnóstico de Técnicas de Levantamiento (Ítem 1)</h2>
+          <div class="box"><strong>Caso A (Operadores Bodega):</strong> ${escapeHtml(casoANombre)}
+<strong>Caso B (Coordinador Operaciones):</strong> ${escapeHtml(casoBNombre)}
+<strong>Caso C (Despachadores Motorizados):</strong> ${escapeHtml(casoCNombre)}
+
+<strong>Justificación Técnica:</strong>
+${escapeHtml(d.item1) || 'Sin respuesta'}</div>
+
+          <h2>2. Matriz de Autonomía y Responsabilidades (Ítem 2)</h2>
+          <div class="box"><strong>Calibración Decisiones y Ruteo:</strong> ${escapeHtml(d.slider1)}%
+<strong>Calibración Valores y Presupuesto:</strong> ${escapeHtml(d.slider2)}%
+<strong>Calibración Datos y Confidencialidad:</strong> ${escapeHtml(d.slider3)}%
+
+<strong>Síntesis de Límites y Responsabilidad:</strong>
+${escapeHtml(d.item2) || 'Sin respuesta'}</div>
+
+          <h2>3. Constructor de Ficha KSAO (Ítem 3)</h2>
+          <div class="box"><strong>K (Conocimientos):</strong> ${escapeHtml(d.ksao_k)}
+<strong>S (Destrezas):</strong> ${escapeHtml(d.ksao_s)}
+<strong>A (Capacidades):</strong> ${escapeHtml(d.ksao_a)}
+<strong>O (Atributos):</strong> ${escapeHtml(d.ksao_o)}
+
+<strong>Síntesis Consolidada:</strong>
+${escapeHtml(d.item3) || 'Sin respuesta'}</div>
+
+          <h2>4. Exit Ticket: Diferencia RRHH vs SST (Ítem 4)</h2>
+          <div class="box">${escapeHtml(d.item4) || 'Sin respuesta'}</div>
+
+          <h2>5. Exit Ticket: Medición de Confidencialidad (Ítem 5)</h2>
+          <div class="box">${escapeHtml(d.item5) || 'Sin respuesta'}</div>
+        </body>
+        </html>
+      `);
+      win.document.close();
+    }
+
+    // PERSISTENT TIMER (65 MINUTES RECORDED IN LOCALSTORAGE)
+    function startTimer() {
+      const timerEl = document.getElementById('timer-display');
+      let startTime = null;
+
+      // FIX 2: protección try/catch con fallback en memoria; sin esto, un
+      // localStorage bloqueado (Safari privado / iframes) rompía la
+      // inicialización completa del autoguardado de la página.
+      try {
+        startTime = localStorage.getItem('i3_perfiles1_act03_timer_start');
+        if (!startTime) {
+          startTime = Date.now();
+          localStorage.setItem('i3_perfiles1_act03_timer_start', startTime);
+        }
+      } catch (e) {
+        console.warn("Storage warning: timer funcionará solo en memoria.", e);
+        startTime = Date.now();
+      }
+
+      const totalDuration = 65 * 60; // 65 min in seconds
+
+      if (timerInterval) clearInterval(timerInterval);
+
+      timerInterval = setInterval(() => {
+        const elapsedSeconds = Math.floor((Date.now() - parseInt(startTime, 10)) / 1000);
+        const remainingSeconds = totalDuration - elapsedSeconds;
+
+        if (remainingSeconds <= 0) {
+          if (timerEl) timerEl.innerText = "00:00 - ¡TIEMPO CONCLUIDO!";
+          clearInterval(timerInterval);
+          return;
+        }
+
+        const m = Math.floor(remainingSeconds / 60);
+        const s = remainingSeconds % 60;
+        if (timerEl) {
+          timerEl.innerText = `${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
+        }
+      }, 1000);
+    }
+
+    // FIX 3: guarda y, si ya se había enviado, re-bloquea el PDF para que
+    // el estudiante deba retransmitir tras modificar cualquier respuesta.
+    function handleFieldChange() {
+      if (isSubmitted) {
+        lockPdfButton();
+      }
+      saveToLocalStorage();
+    }
+
+    // INICIALIZACIÓN
+    window.addEventListener('DOMContentLoaded', () => {
+      loadFromLocalStorage();
+      startTimer();
+
+      document.querySelectorAll('input, textarea, select').forEach(el => {
+        el.addEventListener('input', handleFieldChange);
+        el.addEventListener('change', handleFieldChange);
+      });
+    });
+  </script>
+</body>
+</html>
